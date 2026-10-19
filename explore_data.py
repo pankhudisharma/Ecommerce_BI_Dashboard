@@ -680,3 +680,117 @@ customer_recency = (
 
 print("\nLast Purchase Date:")
 print(customer_recency.head(20))
+
+# Step 2: Calculate Recency
+
+reference_date = df_clean["Order Date"].max()
+
+customer_recency = (
+    reference_date - customer_recency
+).dt.days
+
+print("\nReference Date:", reference_date)
+print("\nDays Since Last Purchase:")
+print(customer_recency.head(20))
+
+# Step 3: Combine Recency, Frequency, and Monetary values
+
+rfm = pd.concat(
+    [
+        customer_recency.rename("Recency"),
+        customer_orders.rename("Frequency"),
+        customer_sales.rename("Monetary")
+    ],
+    axis=1
+)
+
+print("\nRFM Table:")
+print(rfm.head(20))
+
+# --------------------------------
+# GEOGRAPHIC PERFORMANCE ANALYSIS
+# --------------------------------
+
+# Sales by Region
+region_sales = (
+    df_clean.groupby("Region")["Sales"]
+    .sum()
+    .sort_values(ascending=False)
+)
+
+print("\nSales by Region:")
+print(region_sales)
+
+# Profit by Region
+region_profit = (
+    df_clean.groupby("Region")["Profit"]
+    .sum()
+    .sort_values(ascending=False)
+)
+
+print("\nProfit by Region:")
+print(region_profit)
+
+# Orders by Region
+region_orders = (
+    df_clean.groupby("Region")["Order ID"]
+    .nunique()
+    .sort_values(ascending=False)
+)
+
+print("\nOrders by Region:")
+print(region_orders)
+
+# Sales by State
+state_sales = (
+    df_clean.groupby("State/Province")["Sales"]
+    .sum()
+    .sort_values(ascending=False)
+)
+
+print("\nTop 10 States by Sales:")
+print(state_sales.head(10))
+
+# Profit by State
+state_profit = (
+    df_clean.groupby("State/Province")["Profit"]
+    .sum()
+    .sort_values(ascending=False)
+)
+
+print("\nTop 10 States by Profit:")
+print(state_profit.head(10))
+
+# Lowest-profit states
+print("\nBottom 10 States by Profit:")
+print(state_profit.tail(10))
+
+# --------------------------------
+# CITY-LEVEL ANALYSIS
+# --------------------------------
+
+# Sales by City
+city_sales = (
+    df_clean.groupby("City")["Sales"]
+    .sum()
+    .sort_values(ascending=False)
+)
+
+print("\nTop 10 Cities by Sales:")
+print(city_sales.head(10))
+
+
+# Profit by City
+city_profit = (
+    df_clean.groupby("City")["Profit"]
+    .sum()
+    .sort_values(ascending=False)
+)
+
+print("\nTop 10 Cities by Profit:")
+print(city_profit.head(10))
+
+
+# Lowest-profit cities
+print("\nBottom 10 Cities by Profit:")
+print(city_profit.tail(10))
