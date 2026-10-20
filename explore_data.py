@@ -794,3 +794,63 @@ print(city_profit.head(10))
 # Lowest-profit cities
 print("\nBottom 10 Cities by Profit:")
 print(city_profit.tail(10))
+
+# --------------------------------
+# DISCOUNT AND PROFITABILITY ANALYSIS
+# --------------------------------
+
+# Average sales and profit at each discount level
+discount_analysis = (
+    df_clean.groupby("Discount")
+    .agg(
+        Transactions=("Order ID", "count"),
+        Total_Sales=("Sales", "sum"),
+        Average_Sales=("Sales", "mean"),
+        Total_Profit=("Profit", "sum"),
+        Average_Profit=("Profit", "mean")
+    )
+    .sort_index()
+)
+
+print("\nDiscount Analysis:")
+print(discount_analysis)
+
+# Calculate profit margin for each discount level
+
+discount_analysis["Profit_Margin"] = (
+    discount_analysis["Total_Profit"]
+    / discount_analysis["Total_Sales"]
+) * 100
+
+print("\nProfit Margin by Discount:")
+print(
+    discount_analysis[
+        ["Total_Sales", "Total_Profit", "Profit_Margin"]
+    ].round(2)
+)
+
+
+# --------------------------------
+# CATEGORY-WISE DISCOUNT ANALYSIS
+# --------------------------------
+
+category_discount_analysis = (
+    df_clean.groupby(["Category", "Discount"])
+    .agg(
+        Transactions=("Order ID", "count"),
+        Total_Sales=("Sales", "sum"),
+        Total_Profit=("Profit", "sum")
+    )
+    .reset_index()
+)
+
+category_discount_analysis["Profit_Margin"] = (
+    category_discount_analysis["Total_Profit"]
+    / category_discount_analysis["Total_Sales"]
+) * 100
+
+print("\nCategory-wise Discount Analysis:")
+
+print(
+    category_discount_analysis.round(2).to_string(index=False)
+)
